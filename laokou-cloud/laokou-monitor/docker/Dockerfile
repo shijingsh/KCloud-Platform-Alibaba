@@ -18,10 +18,14 @@ FROM docker.io/sunrdocker/jdk17-jre-font-openssl-alpine:latest
 # 信息
 LABEL maintainer="koushenhai"
 LABEL description="laokou-monitor"
+# 挂载目录，宿主机目录，我这里是jar包目录
+VOLUME /docker/laokou-monitor
+# 指定路径，docker容器里jar包的目录
+WORKDIR /data
 # 开放端口
 EXPOSE 5000
 # 挂载
-VOLUME /data
+#VOLUME /data
 # 复制文件
 COPY laokou-monitor.jar app.jar
 RUN ln -snf /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone

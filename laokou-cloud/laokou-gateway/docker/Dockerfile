@@ -18,6 +18,10 @@ FROM docker.io/sunrdocker/jdk17-jre-font-openssl-alpine:latest
 # 信息
 LABEL maintainer="koushenhai"
 LABEL description="laokou-gateway"
+# 挂载目录，宿主机目录，我这里是jar包目录
+VOLUME /docker/laokou-gateway
+# 指定路径，docker容器里jar包的目录
+WORKDIR /data
 # 暴露端口
 EXPOSE 5555
 # 复制文件
