@@ -210,9 +210,9 @@
             <id>dev</id>
             <properties>
                 <NACOS-NAMESPACE>public</NACOS-NAMESPACE>
+                <NACOS-GROUP>LAOKOU_GROUP</NACOS-GROUP>
                 <NACOS-DISCOVERY-ADDRESS>127.0.0.1:8848</NACOS-DISCOVERY-ADDRESS>
                 <NACOS-CONFIG-ADDRESS>127.0.0.1:8848</NACOS-CONFIG-ADDRESS>
-                <NACOS-GROUP>DEFAULT_GROUP</NACOS-GROUP>
                 <profile.active>dev</profile.active>
             </properties>
             <activation>
