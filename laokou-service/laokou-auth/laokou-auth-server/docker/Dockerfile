@@ -23,7 +23,7 @@ WORKDIR /data
 COPY laokou-auth-server.jar app.jar
 RUN ln -snf /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime  \
     && echo 'Asia/Shanghai' >/etc/timezone
-EXPOSE 10000
+EXPOSE 1111
 ENTRYPOINT java -Xms512m -Xmx512m --add-opens \
                                   java.base/java.lang=ALL-UNNAMED \
                                 -Djava.awt.headless=true \

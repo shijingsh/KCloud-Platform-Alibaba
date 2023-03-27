@@ -7,11 +7,19 @@
 - 流量监控显示空
 - flowable 流程研究
 - oss 研究
+- smartsql
+
+
 ###  打包
 mvn clean install -DskipTests
 mvn package -Pdev
 mvn package -Ptest
 ### docker 命令
+
+docker stop laokou-gateway
+docker start laokou-gateway
+docker restart laokou-gateway
+
 docker kill $(docker ps -a -q) 杀死所有实例
 docker rm $(docker ps -a -q)   删除所有实例
 
