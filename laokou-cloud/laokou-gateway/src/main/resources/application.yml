@@ -42,11 +42,14 @@ spring:
         db0:
           nacos:
             server-addr: @NACOS-DISCOVERY-ADDRESS@
-            namespace: @NACOS-NAMESPACE@
+            #namespace: @NACOS-NAMESPACE@
             data-id: gateway-flow.json
+            # org.springframework.cloud.alibaba.sentinel.datasource.RuleType
             rule-type: gw_flow # 网关规则
             group-id: @NACOS-GROUP@
             data-type: json
+            username: nacos
+            password: nacos
     # loadbalancer
     loadbalancer:
       nacos:

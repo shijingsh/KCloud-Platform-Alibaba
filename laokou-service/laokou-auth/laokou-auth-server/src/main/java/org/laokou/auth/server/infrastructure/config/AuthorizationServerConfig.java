@@ -83,7 +83,7 @@ import java.util.List;
 public class AuthorizationServerConfig {
 
     /**
-     *
+     *  授权端点过滤器链
      * @param http
      * @param authorizationServerSettings
      * @param authorizationService
@@ -145,7 +145,7 @@ public class AuthorizationServerConfig {
     }
 
     /**
-     *
+     * 注册客户端
      * @param jdbcTemplate
      * @return
      */
