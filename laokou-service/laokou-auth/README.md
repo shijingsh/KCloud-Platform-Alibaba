@@ -3,23 +3,24 @@
  参考
 https://blog.csdn.net/sjdl9396/article/details/122564492
 
-
+https://blog.csdn.net/baidu_28068985/article/details/128431612
+https://blog.csdn.net/qq_31772441/article/details/126092213
 ## 目录
 
 ### 核心过滤链分析
       Spring 曾经有旧版支持 OAuth2 的方案：Spring Security OAuth 项目，该项目已经被逐步淘汰。官方推荐使用 spring-authorization-server
 
 #### 授权服务器 SecurityFilterChain 过滤链 AuthorizationServerSecurityAutoConfiguration
-      对符合的 URL 和 Method 的请求进行拦截  
+      对符合的 URL 和 Method 的请求进行拦截
       /oauth2/authorize
       /oauth2/consent
       /oauth2/token
       /oauth2/introspect
       /oauth2/revoke
-      /oauth2/jwks  
+      /oauth2/jwks
 ####  OAuth2AuthorizationEndpointFilter
        这个过滤器用来处理授权码认证过程中获取 code 的请求。
-       http://{{AuthorizationServer}}/oauth2/authorize?client_id=client&response_type=code&scope=testScope  
+       http://{{AuthorizationServer}}/oauth2/authorize?client_id=client&response_type=code&scope=testScope
 #### OAuth2ClientAuthenticationFilter
       客户端认证过滤器，主要是对请求的客户端进行认证。无论 grant type 是授权码还是客户端认证，请求中都会包含 client id 和 client secret。此过滤器就是确认客户端的 client id 和 client secret 是否正确。
 #### OAuth2TokenEndpointFilter
@@ -41,7 +42,7 @@ https://blog.csdn.net/sjdl9396/article/details/122564492
 
 ## 授权模式
 
-### 客户端凭据许可：grant_type=client_credentials。  
+### 客户端凭据许可：grant_type=client_credentials。
 ```
     POST /oauth2/token?grant_type=client_credentials&scope=test1 test2 HTTP/1.1
     Host: localhost:8080
@@ -54,8 +55,8 @@ https://blog.csdn.net/sjdl9396/article/details/122564492
     对传入的client_id和client_secret进行判断。登录认证成功后，设置认证成功的结果（OAuth2ClientAuthenticationToken，内含客户端信息的RegisteredClient结果）到SecurityContext中。然后跳到下一步的过滤器中。
 
     <2>对客户端信息进行二次认证
-    
+
     过滤器OAuth2TokenEndpointFilter继续拦截此请求，然后在颁发 Token 之前，请求OAuth2ClientCredentialsAuthenticationProvider（客户端凭据许可认证管理器的提供者）的authenticate()方法进行第二次认证。
     因为第一步的OAuth2ClientAuthenticationFilter已经校验过client_secret，这里主要对 client 的授权模式是否吻合，以及 scope 的授权范围进行校验就通过了。
-    在OAuth2TokenEndpointFilter中，调用 OAuth2XxxxAuthenticationProvider 的 authenticate() 方法进行认证是固定流程。实际会根据不同的grant_type去选择调用不同的 
+    在OAuth2TokenEndpointFilter中，调用 OAuth2XxxxAuthenticationProvider 的 authenticate() 方法进行认证是固定流程。实际会根据不同的grant_type去选择调用不同的
     OAuth2XxxxAuthenticationProvider 进行认证。因此，对客户端信息进行了二次认证，第一次和第二次的认证的职责是不通的。
