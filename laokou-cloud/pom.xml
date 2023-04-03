@@ -22,18 +22,19 @@
     <parent>
         <groupId>org.laokou</groupId>
         <artifactId>laokou-parent</artifactId>
-        <version>3.0.4</version>
+        <version>3.0.5</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.laokou</groupId>
     <artifactId>laokou-cloud</artifactId>
-    <version>3.0.4</version>
+    <version>3.0.5</version>
     <packaging>pom</packaging>
     <modules>
         <module>laokou-gateway</module>
         <module>laokou-monitor</module>
+        <module>laokou-register</module>
+        <module>laokou-seata</module>
         <module>laokou-sentinel</module>
-        <module>laokou-openfeign</module>
     </modules>
 </project>

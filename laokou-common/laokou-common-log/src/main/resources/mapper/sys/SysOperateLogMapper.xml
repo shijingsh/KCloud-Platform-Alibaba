@@ -34,6 +34,7 @@ select
 ,operator
 ,error_msg
 ,create_date
+,take_time
 from boot_sys_operate_log
 where del_flag = 0
 <if test="qo.module != null and qo.module != ''">
@@ -48,7 +49,7 @@ where del_flag = 0
 order by create_date desc
     </select>
 
-    <select id="handleLoginLog" resultSetType="FORWARD_ONLY" fetchSize="1000" resultType="org.laokou.common.log.vo.SysOperateLogVO">
+    <select id="resultList" resultSetType="FORWARD_ONLY" fetchSize="1000" resultType="org.laokou.common.log.vo.SysOperateLogVO">
         select
         `module`
         ,id
@@ -64,6 +65,7 @@ order by create_date desc
         ,operator
         ,error_msg
         ,create_date
+        ,take_time
         from boot_sys_operate_log
         where del_flag = 0
         <if test="qo.module != null and qo.module != ''">

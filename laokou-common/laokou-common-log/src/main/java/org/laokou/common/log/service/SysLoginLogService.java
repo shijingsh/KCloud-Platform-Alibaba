@@ -15,14 +15,16 @@
  */
 package org.laokou.common.log.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.apache.ibatis.session.ResultHandler;
+import org.laokou.common.easy.excel.service.ResultService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.laokou.common.log.event.LoginLogEvent;
 import org.laokou.common.log.qo.SysLoginLogQo;
 import org.laokou.common.log.vo.SysLoginLogVO;
+
 /**
  * @author laokou
  */
-public interface SysLoginLogService {
+public interface SysLoginLogService extends ResultService<SysLoginLogQo,SysLoginLogVO> {
     /**
      * 分页查询登录日志
      * @param page
@@ -32,18 +34,17 @@ public interface SysLoginLogService {
     IPage<SysLoginLogVO> getLoginLogList(IPage<SysLoginLogVO> page, SysLoginLogQo qo);
 
     /**
-     * 查询登录日志
-     * @param qo
-     * @param handler
-     * @return
-     */
-    void handleLoginLog(SysLoginLogQo qo, ResultHandler<SysLoginLogVO> handler);
-
-    /**
      * 新增登录日志
      * @param event
      * @return
      */
     Boolean insertLoginLog(LoginLogEvent event);
+
+    /**
+     * 导出登录日志
+     * @param qo
+     * @param response
+     */
+    void exportLoginLog(SysLoginLogQo qo, HttpServletResponse response);
 
 }

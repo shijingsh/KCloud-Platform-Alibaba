@@ -22,18 +22,21 @@ import org.laokou.auth.client.handler.CustomAuthExceptionHandler;
 import org.laokou.auth.client.user.UserDetail;
 import org.laokou.auth.server.domain.sys.repository.service.*;
 import org.laokou.common.core.enums.ResultStatusEnum;
+import org.laokou.common.core.utils.DateUtil;
 import org.laokou.common.core.utils.HttpContextUtil;
+import org.laokou.common.core.utils.IpUtil;
+import org.laokou.common.easy.captcha.service.SysCaptchaService;
 import org.laokou.common.i18n.core.StatusCode;
 import org.laokou.common.i18n.utils.MessageUtil;
 import org.laokou.common.jasypt.utils.AESUtil;
 import org.laokou.common.log.utils.LoginLogUtil;
-import org.laokou.redis.utils.RedisKeyUtil;
-import org.laokou.redis.utils.RedisUtil;
-import org.laokou.tenant.service.SysSourceService;
+import org.laokou.common.redis.utils.RedisUtil;
+import org.laokou.common.tenant.service.SysSourceService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
@@ -45,6 +48,8 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.context.AuthorizationServerContextHolder;
 import org.springframework.security.oauth2.server.authorization.token.DefaultOAuth2TokenContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Collections;
@@ -71,7 +76,6 @@ public abstract class AbstractOAuth2BaseAuthenticationProvider implements Authen
     protected final OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator;
     protected final SysSourceService sysSourceService;
     protected final RedisUtil redisUtil;
-    protected final SysAuthenticationService sysAuthenticationService;
     public AbstractOAuth2BaseAuthenticationProvider(
             SysUserService sysUserService
             , SysMenuService sysMenuService
@@ -82,7 +86,6 @@ public abstract class AbstractOAuth2BaseAuthenticationProvider implements Authen
             , OAuth2AuthorizationService authorizationService
             , OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator
             , SysSourceService sysSourceService
-            , SysAuthenticationService sysAuthenticationService
             , RedisUtil redisUtil) {
         this.sysDeptService = sysDeptService;
         this.sysMenuService = sysMenuService;
@@ -94,7 +97,6 @@ public abstract class AbstractOAuth2BaseAuthenticationProvider implements Authen
         this.authorizationService = authorizationService;
         this.sysSourceService = sysSourceService;
         this.redisUtil = redisUtil;
-        this.sysAuthenticationService = sysAuthenticationService;
     }
 
 
@@ -102,7 +104,7 @@ public abstract class AbstractOAuth2BaseAuthenticationProvider implements Authen
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         HttpServletRequest request = HttpContextUtil.getHttpServletRequest();
         Authentication principal = login(request);
-        return getToken(authentication,principal,request);
+        return getToken(authentication,principal);
     }
 
     /**
@@ -128,12 +130,14 @@ public abstract class AbstractOAuth2BaseAuthenticationProvider implements Authen
     abstract AuthorizationGrantType getGrantType();
 
     /**
-     * 仿照授权码模式
+     * 获取token
      * @param authentication
      * @param principal
      * @return
      */
-    protected Authentication getToken(Authentication authentication,Authentication principal,HttpServletRequest request) throws IOException {
+    @Transactional(rollbackFor = Exception.class)
+    protected Authentication getToken(Authentication authentication,Authentication principal) throws IOException {
+        // 仿照授权码模式
         // 生成token（access_token + refresh_token）
         AbstractOAuth2BaseAuthenticationToken abstractOAuth2BaseAuthenticationToken = (AbstractOAuth2BaseAuthenticationToken) authentication;
         OAuth2ClientAuthenticationToken clientPrincipal = getAuthenticatedClientElseThrowInvalidClient(abstractOAuth2BaseAuthenticationToken);
@@ -143,7 +147,6 @@ public abstract class AbstractOAuth2BaseAuthenticationProvider implements Authen
         String loginName = principal.getCredentials().toString();
         // 认证类型
         AuthorizationGrantType grantType = getGrantType();
-        String loginType = grantType.getValue();
         // 获取上下文
         DefaultOAuth2TokenContext.Builder builder = DefaultOAuth2TokenContext.builder()
                 .registeredClient(registeredClient)
@@ -169,9 +172,7 @@ public abstract class AbstractOAuth2BaseAuthenticationProvider implements Authen
         // jwt
         if (generatedOauth2AccessToken instanceof ClaimAccessor) {
             authorizationBuilder
-                    .token(oAuth2AccessToken,
-                            meta -> meta.put(OAuth2Authorization.Token.CLAIMS_METADATA_NAME
-                                    ,((ClaimAccessor)generatedOauth2AccessToken).getClaims()))
+                    .token(oAuth2AccessToken, meta -> meta.put(OAuth2Authorization.Token.CLAIMS_METADATA_NAME,((ClaimAccessor)generatedOauth2AccessToken).getClaims()))
                     .authorizedScopes(scopes)
                     // admin后台管理需要token，解析token获取用户信息，因此将用户信息存在数据库，下次直接查询数据库就可以获取用户信息
                     .attribute(Principal.class.getName(), principal);
@@ -189,15 +190,22 @@ public abstract class AbstractOAuth2BaseAuthenticationProvider implements Authen
         authorizationBuilder.refreshToken(oAuth2RefreshToken);
         OAuth2Authorization oAuth2Authorization = authorizationBuilder.build();
         authorizationService.save(oAuth2Authorization);
-        // 登录成功
-        Long tenantId = Long.valueOf(request.getParameter(AuthConstant.TENANT_ID));
-        loginLogUtil.recordLogin(loginName,loginType, ResultStatusEnum.SUCCESS.ordinal(), AuthConstant.LOGIN_SUCCESS_MSG,request,tenantId);
-        // 账号是否已经登录并且未过期，是则强制踢出，反之不操作
-        accountKill(oAuth2AccessToken.getTokenValue(),loginName);
+        // 清空上下文
+        SecurityContextHolder.clearContext();
         return new OAuth2AccessTokenAuthenticationToken(
                 registeredClient, clientPrincipal, oAuth2AccessToken, oAuth2RefreshToken, Collections.emptyMap());
     }
 
+    /**
+     * 获取用户信息
+     * @param loginName
+     * @param password
+     * @param request
+     * @param captcha
+     * @param uuid
+     * @return
+     * @throws IOException
+     */
     protected UsernamePasswordAuthenticationToken getUserInfo(String loginName, String password, HttpServletRequest request,String captcha,String uuid) throws IOException {
         AuthorizationGrantType grantType = getGrantType();
         String loginType = grantType.getValue();
@@ -229,7 +237,7 @@ public abstract class AbstractOAuth2BaseAuthenticationProvider implements Authen
             loginLogUtil.recordLogin(loginName,loginType, ResultStatusEnum.FAIL.ordinal(), MessageUtil.getMessage(StatusCode.USERNAME_DISABLE),request,tenantId);
             CustomAuthExceptionHandler.throwError(StatusCode.USERNAME_DISABLE, MessageUtil.getMessage(StatusCode.USERNAME_DISABLE));
         }
-        Long userId = userDetail.getUserId();
+        Long userId = userDetail.getId();
         Integer superAdmin = userDetail.getSuperAdmin();
         // 权限标识列表
         List<String> permissionsList = sysMenuService.getPermissionsList(tenantId,superAdmin,userId);
@@ -249,6 +257,12 @@ public abstract class AbstractOAuth2BaseAuthenticationProvider implements Authen
             String sourceName = sysSourceService.querySourceName(tenantId);
             userDetail.setSourceName(sourceName);
         }
+        // 登录IP
+        userDetail.setLoginIp(IpUtil.getIpAddr(request));
+        // 登录时间
+        userDetail.setLoginDate(DateUtil.now());
+        // 登录成功
+        loginLogUtil.recordLogin(loginName,loginType, ResultStatusEnum.SUCCESS.ordinal(), AuthConstant.LOGIN_SUCCESS_MSG,request,tenantId);
         return new UsernamePasswordAuthenticationToken(userDetail,loginName,userDetail.getAuthorities());
     }
 
@@ -261,21 +275,6 @@ public abstract class AbstractOAuth2BaseAuthenticationProvider implements Authen
             return clientPrincipal;
         }
         throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_CLIENT);
-    }
-
-    /**
-     * 账号踢出
-     * @param accessToken
-     * @param loginName
-     */
-    private void accountKill(String accessToken,String loginName) {
-        List<String> accessTokenList = sysAuthenticationService.getAccessTokenList(loginName, accessToken);
-        if (CollectionUtils.isNotEmpty(accessTokenList)) {
-            accessTokenList.forEach(item -> {
-                String accountKillKey = RedisKeyUtil.getAccountKillKey(item);
-                redisUtil.set(accountKillKey,DEFAULT,RedisUtil.HOUR_ONE_EXPIRE);
-            });
-        }
     }
 
 }

@@ -20,17 +20,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.laokou.auth.client.constant.AuthConstant;
 import org.laokou.auth.client.user.UserDetail;
-import org.laokou.auth.server.domain.sys.repository.service.SysCaptchaService;
 import org.laokou.common.core.constant.Constant;
 import org.laokou.common.core.vo.OptionVO;
+import org.laokou.common.easy.captcha.service.SysCaptchaService;
 import org.laokou.common.i18n.core.CustomException;
 import org.laokou.auth.server.application.service.SysAuthApplicationService;
 import lombok.extern.slf4j.Slf4j;
 import org.laokou.common.core.utils.*;
 import org.laokou.common.i18n.core.StatusCode;
-import org.laokou.redis.utils.RedisKeyUtil;
-import org.laokou.redis.utils.RedisUtil;
-import org.laokou.tenant.service.SysTenantService;
+import org.laokou.common.redis.utils.RedisKeyUtil;
+import org.laokou.common.redis.utils.RedisUtil;
+import org.laokou.common.tenant.service.SysTenantService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
@@ -82,10 +82,6 @@ public class SysAuthApplicationServiceImpl implements SysAuthApplicationService 
             return true;
         }
         token = token.substring(7);
-        String accountKillKey = RedisKeyUtil.getAccountKillKey(token);
-        if (redisUtil.hasKey(accountKillKey)) {
-            redisUtil.delete(accountKillKey);
-        }
         OAuth2Authorization oAuth2Authorization = oAuth2AuthorizationService.findByToken(token, OAuth2TokenType.ACCESS_TOKEN);
         if (oAuth2Authorization == null) {
             return true;
@@ -95,20 +91,14 @@ public class SysAuthApplicationServiceImpl implements SysAuthApplicationService 
         oAuth2AuthorizationService.remove(oAuth2Authorization);
         // 用户key
         String userInfoKey = RedisKeyUtil.getUserInfoKey(token);
-        if (redisUtil.hasKey(userInfoKey)) {
-            redisUtil.delete(userInfoKey);
-        }
-        Long userId = userDetail.getUserId();
+        redisUtil.delete(userInfoKey);
+        Long userId = userDetail.getId();
         // 菜单key
         String resourceTreeKey = RedisKeyUtil.getResourceTreeKey(userId);
-        if (redisUtil.hasKey(resourceTreeKey)) {
-            redisUtil.delete(resourceTreeKey);
-        }
+        redisUtil.delete(resourceTreeKey);
         // 消息key
         String messageUnReadKey = RedisKeyUtil.getMessageUnReadKey(userId);
-        if (redisUtil.hasKey(messageUnReadKey)) {
-            redisUtil.delete(messageUnReadKey);
-        }
+        redisUtil.delete(messageUnReadKey);
         return true;
     }
 

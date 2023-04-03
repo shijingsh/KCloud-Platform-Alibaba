@@ -21,7 +21,9 @@ import org.laokou.auth.client.user.UserDetail;
 import org.laokou.auth.server.domain.sys.repository.service.SysDeptService;
 import org.laokou.auth.server.domain.sys.repository.service.SysMenuService;
 import org.laokou.auth.server.infrastructure.authentication.OAuth2PasswordAuthenticationProvider;
+import org.laokou.common.core.utils.DateUtil;
 import org.laokou.common.core.utils.HttpContextUtil;
+import org.laokou.common.core.utils.IpUtil;
 import org.laokou.common.i18n.core.StatusCode;
 import org.laokou.common.i18n.utils.MessageUtil;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,10 +31,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 /**
  * @author laokou
  */
+@Service
 @RequiredArgsConstructor
 public class SysUserDetailServiceImpl implements UserDetailsService {
 
@@ -62,7 +67,7 @@ public class SysUserDetailServiceImpl implements UserDetailsService {
             errMsg = MessageUtil.getMessage(StatusCode.USERNAME_DISABLE);
             throw new UsernameNotFoundException(errMsg);
         }
-        Long userId = userDetail.getUserId();
+        Long userId = userDetail.getId();
         Integer superAdmin = userDetail.getSuperAdmin();
         // 权限标识列表
         List<String> permissionsList = sysMenuService.getPermissionsList(0L,superAdmin,userId);
@@ -73,6 +78,10 @@ public class SysUserDetailServiceImpl implements UserDetailsService {
         List<Long> deptIds = sysDeptService.getDeptIds(superAdmin, userId,0L);
         userDetail.setDeptIds(deptIds);
         userDetail.setPermissionList(permissionsList);
+        // 登录IP
+        userDetail.setLoginIp(IpUtil.getIpAddr(request));
+        // 登录时间
+        userDetail.setLoginDate(DateUtil.now());
         return userDetail;
     }
 }

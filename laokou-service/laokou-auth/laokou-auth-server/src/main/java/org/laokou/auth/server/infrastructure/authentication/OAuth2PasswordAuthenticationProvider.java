@@ -20,11 +20,12 @@ import org.laokou.auth.client.constant.AuthConstant;
 import org.laokou.auth.client.handler.CustomAuthExceptionHandler;
 import org.laokou.auth.server.domain.sys.repository.service.*;
 import org.laokou.common.core.utils.StringUtil;
+import org.laokou.common.easy.captcha.service.SysCaptchaService;
 import org.laokou.common.i18n.core.StatusCode;
 import org.laokou.common.i18n.utils.MessageUtil;
 import org.laokou.common.log.utils.LoginLogUtil;
-import org.laokou.redis.utils.RedisUtil;
-import org.laokou.tenant.service.SysSourceService;
+import org.laokou.common.redis.utils.RedisUtil;
+import org.laokou.common.tenant.service.SysSourceService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -54,9 +55,8 @@ public class OAuth2PasswordAuthenticationProvider extends AbstractOAuth2BaseAuth
             , OAuth2AuthorizationService authorizationService
             , OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator
             , SysSourceService sysSourceService
-            , SysAuthenticationService sysAuthenticationService
             , RedisUtil redisUtil) {
-        super(sysUserService, sysMenuService, sysDeptService, loginLogUtil, passwordEncoder,sysCaptchaService,authorizationService,tokenGenerator, sysSourceService,sysAuthenticationService,redisUtil);
+        super(sysUserService, sysMenuService, sysDeptService, loginLogUtil, passwordEncoder,sysCaptchaService,authorizationService,tokenGenerator, sysSourceService,redisUtil);
     }
 
     @Override

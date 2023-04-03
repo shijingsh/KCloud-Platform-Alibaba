@@ -16,7 +16,7 @@
 package org.laokou.common.log.service;
 import java.util.*;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.laokou.common.log.dto.AuditLogDTO;
+import org.laokou.common.log.event.AuditLogEvent;
 import org.laokou.common.log.entity.SysAuditLogDO;
 import org.laokou.common.log.vo.SysAuditLogVO;
 
@@ -37,5 +37,5 @@ public interface SysAuditLogService extends IService<SysAuditLogDO> {
      * @param dto
      * @return
      */
-    Boolean insertAuditLog(AuditLogDTO dto);
+    Boolean insertAuditLog(AuditLogEvent dto);
 }

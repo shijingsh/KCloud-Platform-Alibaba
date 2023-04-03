@@ -19,8 +19,8 @@ import org.laokou.auth.client.handler.CustomAuthExceptionHandler;
 import org.laokou.auth.client.user.UserDetail;
 import org.laokou.common.i18n.core.StatusCode;
 import org.laokou.common.i18n.utils.MessageUtil;
-import org.laokou.redis.utils.RedisKeyUtil;
-import org.laokou.redis.utils.RedisUtil;
+import org.laokou.common.redis.utils.RedisKeyUtil;
+import org.laokou.common.redis.utils.RedisUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
@@ -43,12 +43,6 @@ public class CustomOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
     @Override
     public OAuth2AuthenticatedPrincipal introspect(String token) {
-        // 账号是否被强制踢出
-        String accountKillKey = RedisKeyUtil.getAccountKillKey(token);
-        Object value = redisUtil.get(accountKillKey);
-        if (value != null) {
-            CustomAuthExceptionHandler.throwError(401,"您的账号已在别处登录，请重新登录");
-        }
         String userInfoKey = RedisKeyUtil.getUserInfoKey(token);
         Object obj = redisUtil.get(userInfoKey);
         if (obj != null) {

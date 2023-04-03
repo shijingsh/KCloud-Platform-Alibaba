@@ -32,12 +32,11 @@ import org.laokou.admin.client.vo.SysMessageVO;
 import org.apache.commons.collections.CollectionUtils;
 import org.laokou.auth.client.utils.UserUtil;
 import org.laokou.common.core.utils.ConvertUtil;
+import org.laokou.common.core.utils.DateUtil;
 import org.laokou.common.i18n.utils.ValidatorUtil;
 import org.laokou.common.mybatisplus.utils.BatchUtil;
 import org.laokou.im.client.PushMsgDTO;
-import org.laokou.redis.utils.RedisKeyUtil;
-import org.laokou.redis.utils.RedisUtil;
-import org.laokou.tenant.processor.DsTenantProcessor;
+import org.laokou.common.tenant.processor.DsTenantProcessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
@@ -54,7 +53,6 @@ public class SysMessageApplicationServiceImpl implements SysMessageApplicationSe
 
     private final SysMessageDetailService sysMessageDetailService;
     private final ImApiFeignClient imApiFeignClient;
-    private final RedisUtil redisUtil;
     private final BatchUtil<SysMessageDetailDO> batchUtil;
 
     @Override
@@ -63,7 +61,7 @@ public class SysMessageApplicationServiceImpl implements SysMessageApplicationSe
     public Boolean insertMessage(MessageDTO dto) {
         ValidatorUtil.validateEntity(dto);
         SysMessageDO messageDO = ConvertUtil.sourceToTarget(dto, SysMessageDO.class);
-        messageDO.setCreateDate(new Date());
+        messageDO.setCreateDate(DateUtil.now());
         messageDO.setCreator(UserUtil.getUserId());
         sysMessageService.save(messageDO);
         Set<String> receiver = dto.getReceiver();
@@ -74,7 +72,7 @@ public class SysMessageApplicationServiceImpl implements SysMessageApplicationSe
             SysMessageDetailDO detailDO = new SysMessageDetailDO();
             detailDO.setMessageId(messageDO.getId());
             detailDO.setUserId(Long.valueOf(next));
-            detailDO.setCreateDate(new Date());
+            detailDO.setCreateDate(DateUtil.now());
             detailDO.setCreator(UserUtil.getUserId());
             detailDOList.add(detailDO);
         }
@@ -93,14 +91,6 @@ public class SysMessageApplicationServiceImpl implements SysMessageApplicationSe
             pushMsgDTO.setReceiver(receiver);
             // 推送消息
             imApiFeignClient.push(pushMsgDTO);
-            receiver.forEach(item -> {
-                // 根据用户，分别将递增未读消息数
-                String messageUnReadKey = RedisKeyUtil.getMessageUnReadKey(Long.valueOf(item));
-                Object obj = redisUtil.get(messageUnReadKey);
-                if (obj != null) {
-                    redisUtil.incrementAndGet(messageUnReadKey);
-                }
-            });
         }
     }
 
@@ -118,12 +108,6 @@ public class SysMessageApplicationServiceImpl implements SysMessageApplicationSe
     public MessageDetailVO getMessageByDetailId(Long id) {
         Integer version = sysMessageDetailService.getVersion(id);
         sysMessageService.readMessage(id,version);
-        final Long userId = UserUtil.getUserId();
-        String messageUnReadKey = RedisKeyUtil.getMessageUnReadKey(userId);
-        Object obj = redisUtil.get(messageUnReadKey);
-        if (obj != null) {
-            redisUtil.decrementAndGet(messageUnReadKey);
-        }
         return sysMessageService.getMessageByDetailId(id);
     }
 
@@ -145,13 +129,7 @@ public class SysMessageApplicationServiceImpl implements SysMessageApplicationSe
     @DS(DsTenantProcessor.TENANT)
     public Long unReadCount() {
         final Long userId = UserUtil.getUserId();
-        String messageUnReadKey = RedisKeyUtil.getMessageUnReadKey(userId);
-        Object obj = redisUtil.get(messageUnReadKey);
-        if (obj != null) {
-            return Long.valueOf("" + obj);
-        }
         long count = sysMessageDetailService.messageCount(userId);
-        redisUtil.addAndGet(messageUnReadKey,count);
         return count;
     }
 

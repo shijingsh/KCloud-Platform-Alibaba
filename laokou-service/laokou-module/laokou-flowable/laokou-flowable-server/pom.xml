@@ -22,11 +22,15 @@
     <parent>
         <artifactId>laokou-flowable</artifactId>
         <groupId>org.laokou</groupId>
-        <version>3.0.4</version>
+        <version>3.0.5</version>
     </parent>
     <groupId>org.laokou</groupId>
     <artifactId>laokou-flowable-server</artifactId>
     <dependencies>
+        <dependency>
+            <groupId>org.laokou</groupId>
+            <artifactId>laokou-common-cors</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.github.ulisesbocchio</groupId>
             <artifactId>jasypt-spring-boot-starter</artifactId>
@@ -52,10 +56,6 @@
             <artifactId>flowable-spring-boot-starter-process</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.laokou</groupId>
             <artifactId>laokou-flowable-client</artifactId>
         </dependency>
@@ -72,8 +72,8 @@
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.codecentric</groupId>
-            <artifactId>spring-boot-admin-starter-client</artifactId>
+            <groupId>org.laokou</groupId>
+            <artifactId>laokou-common-seata</artifactId>
         </dependency>
     </dependencies>
 
@@ -82,6 +82,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -20,8 +20,7 @@ package org.laokou.admin.server;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
-import org.laokou.dynamic.router.utils.RouterUtil;
-import org.mybatis.spring.annotation.MapperScan;
+import org.laokou.common.dynamic.router.utils.RouterUtil;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -30,6 +29,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
 
@@ -40,36 +40,21 @@ import java.io.IOException;
  * DDD分层架构(分布式微服务架构) > 表现层 应用层 领域层 基础层
  * @author laokou
  */
-@SpringBootApplication(scanBasePackages = {"org.laokou.tenant"
-        , "org.laokou.common.i18n"
-        , "org.laokou.common.log"
-        , "org.laokou.common.data.cache"
-        , "org.laokou.common.data.filter"
-        , "org.laokou.common.security"
-        , "org.laokou.sentinel"
-        , "org.laokou.common.swagger"
-        , "org.laokou.common.core"
-        , "org.laokou.dynamic.router"
-        , "org.laokou.admin"
-        , "org.laokou.redis"
-        , "org.laokou.openfeign"
-        , "org.laokou.common.mybatisplus"
-        , "org.laokou.auth.client"})
+@SpringBootApplication
 @EnableDiscoveryClient
 @EnableConfigurationProperties
 @EnableAspectJAutoProxy(exposeProxy = true)
 @EnableEncryptableProperties
 @EnableFeignClients
 @EnableAsync
-@MapperScan(value = {"org.laokou.admin.server.domain.sys.repository.mapper"
-        , "org.laokou.tenant.mapper"
-        , "org.laokou.common.log.mapper"})
 @RequiredArgsConstructor
 public class AdminApplication implements CommandLineRunner {
 
     private final RouterUtil routerUtil;
 
     public static void main(String[] args) {
+        // SpringSecurity 子线程读取父线程的上下文
+        System.setProperty(SecurityContextHolder.SYSTEM_PROPERTY,SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
         SpringApplication.run(AdminApplication.class, args);
     }
 

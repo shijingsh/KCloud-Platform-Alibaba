@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.laokou</groupId>
         <artifactId>laokou-cloud</artifactId>
-        <version>3.0.4</version>
+        <version>3.0.5</version>
     </parent>
     <groupId>org.laokou</groupId>
     <artifactId>laokou-gateway</artifactId>
@@ -117,18 +117,18 @@
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
         </dependency>
         <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-client</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.laokou</groupId>
-            <artifactId>laokou-kafka-client</artifactId>
+            <artifactId>laokou-common-core</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-web</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>de.codecentric</groupId>
-            <artifactId>spring-boot-admin-starter-client</artifactId>
         </dependency>
     </dependencies>
     <build>

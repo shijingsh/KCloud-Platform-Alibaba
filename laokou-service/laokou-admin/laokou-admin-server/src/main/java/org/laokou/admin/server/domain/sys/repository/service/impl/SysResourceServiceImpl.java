@@ -20,9 +20,9 @@ import org.apache.ibatis.session.ResultHandler;
 import org.laokou.admin.server.domain.sys.entity.SysResourceDO;
 import org.laokou.admin.server.domain.sys.repository.mapper.SysResourceMapper;
 import org.laokou.admin.server.domain.sys.repository.service.SysResourceService;
+import org.laokou.admin.server.infrastructure.index.ResourceIndex;
 import org.laokou.admin.server.interfaces.qo.SysResourceQo;
 import org.laokou.admin.client.vo.SysResourceVO;
-import org.laokou.elasticsearch.client.index.ResourceIndex;
 import org.springframework.stereotype.Service;
 /**
  * @author laokou
@@ -51,11 +51,6 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper, SysRe
     }
 
     @Override
-    public void handleResourceList(String code, ResultHandler<ResourceIndex> handler) {
-        this.baseMapper.handleResourceList(code,handler);
-    }
-
-    @Override
     public SysResourceVO getResourceAuditByResourceId(Long id) {
         return baseMapper.getResourceAuditByResourceId(id);
     }
@@ -63,5 +58,10 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper, SysRe
     @Override
     public Integer getVersion(Long id) {
         return this.baseMapper.getVersion(id);
+    }
+
+    @Override
+    public void resultList(String code, ResultHandler<ResourceIndex> resultHandler) {
+        this.baseMapper.resultList(code,resultHandler);
     }
 }

@@ -21,30 +21,17 @@
     <parent>
         <artifactId>laokou-service</artifactId>
         <groupId>org.laokou</groupId>
-        <version>3.0.4</version>
+        <version>3.0.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.laokou</groupId>
-    <version>3.0.4</version>
+    <version>3.0.5</version>
     <artifactId>laokou-module</artifactId>
     <packaging>pom</packaging>
 
     <modules>
-        <module>laokou-oss</module>
-        <module>laokou-sms</module>
-        <module>laokou-mail</module>
         <module>laokou-im</module>
-        <module>laokou-elasticsearch</module>
-        <module>laokou-redis</module>
-        <module>laokou-rocketmq</module>
         <module>laokou-flowable</module>
-        <module>laokou-mongodb</module>
-        <module>laokou-kafka</module>
-        <module>laokou-tenant</module>
-        <module>laokou-freemarker</module>
-        <module>laokou-power-job</module>
-        <module>laokou-dynamic-router</module>
-        <module>laokou-hbase</module>
-        <module>laokou-wechat</module>
+        <module>laokou-test</module>
     </modules>
 </project>

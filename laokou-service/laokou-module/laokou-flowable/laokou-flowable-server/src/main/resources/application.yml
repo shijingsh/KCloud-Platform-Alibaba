@@ -15,7 +15,7 @@
 # */
 # server
 server:
-  port: 10005
+  port: 10000
 
 #spring
 spring:
@@ -32,6 +32,9 @@ spring:
       ignoredInterfaces:
         - docker0
         - veth.*
+  datasource:
+    dynamic:
+      primary: flowable
 
 flowable:
   # 只保存审批记录

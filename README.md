@@ -7,7 +7,7 @@
 
 ### 📣 项目介绍
 <p align="center"><img src="doc/image/logo.png" width="250" height="100"></p>
-KCloud-Platform-Alibaba（老寇云平台）是一款企业级微服务架构的云服务平台。基于Spring Boot 3.0.4、Spring Cloud 2022.0.1、Spring Cloud Alibaba 2022.0.0.0-RC1 最新版本开发的多租户SaaS系统。
+KCloud-Platform-Alibaba（老寇云平台）是一款企业级微服务架构的云服务平台。基于Spring Boot 3.0.5、Spring Cloud 2022.0.2、Spring Cloud Alibaba 2022.0.0.0-RC1 最新版本开发的多租户SaaS系统。
 遵循SpringBoot编程思想，高度模块化和可配置化。具备服务注册&发现、配置中心、服务限流、熔断降级、监控报警、多数据源、工作流、高亮搜索、定时任务、分布式缓存、分布式事务、分布式存储等功能，用于快速构建微服务项目。目前支持Shell、Docker等多种部署方式，实现RBAC权限、其中包含系统管理、系统监控、工作流程、数据分析等几大模块。
 遵循阿里代码规范，代码简洁、架构清晰，非常适合作为基础框架使用。
 <p align="center">
@@ -17,8 +17,8 @@ KCloud-Platform-Alibaba（老寇云平台）是一款企业级微服务架构的
     <a target="_blank" href="https://github.com/KouShenhai/KCloud-Platform-Alibaba"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/KouShenhai/KCloud-Platform-Alibaba"></a>
 	<a target="_blank" href="https://gitee.com/laokouyun/KCloud-Platform-Alibaba/stargazers"><img src="https://gitee.com/laokouyun/KCloud-Platform-Alibaba/badge/star.svg?theme=dark" alt="Gitee Star"></a>
     <a target="_blank" href="https://gitee.com/laokouyun/KCloud-Platform-Alibaba"><img src="https://gitee.com/laokouyun/KCloud-Platform-Alibaba/badge/fork.svg?theme=dark"  alt="Gitee Fork"></a>
-    <a target="_blank" href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/static/v1?label=Spring Boot&message=3.0.4&color=green" alt="SpringBoot"></a>
-    <a target="_blank" href="https://spring.io/projects/spring-cloud"><img alt="Spring Cloud" src="https://img.shields.io/static/v1?label=Spring Cloud&message=2022.0.1&color=green"></a>
+    <a target="_blank" href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/static/v1?label=Spring Boot&message=3.0.5&color=green" alt="SpringBoot"></a>
+    <a target="_blank" href="https://spring.io/projects/spring-cloud"><img alt="Spring Cloud" src="https://img.shields.io/static/v1?label=Spring Cloud&message=2022.0.2&color=green"></a>
     <a target="_blank" href="https://github.com/alibaba/spring-cloud-alibaba"><img alt="Spring Cloud" src="https://img.shields.io/static/v1?label=Spring Cloud Alibaba&message=2022.0.0.0-RC1&color=orange"></a>
     <a target="_blank" href="https://spring.io/projects/spring-authorization-server"><img alt="OAuth 2.1" src="https://img.shields.io/static/v1?label=OAuth 2.1&message=1.0.1&color=blue"></a>
     <a target="_blank" href="https://www.oracle.com/java/technologies/downloads/#java17"><img alt="JDK" src="https://img.shields.io/badge/JDK-17.0.4.1-blue.svg"/></a>
@@ -59,8 +59,8 @@ tenant/tenant123
 🚀 租户管理：租户信息增删改查增删改查（默认数据库）       
 🚀 套餐管理：自定义租户菜单增删改查（默认数据库）    
 🚀 数据源管理：数据源信息增删改查（默认数据库）         
-🚀 资源管理：视频、图片、音频信息增删改查，资源审批、处理、转办、委派（分布式事务AT模式），审批日志，数据同步（批量同步到ES）（默认数据库）          
-🚀 用户登录：账号密码（多租户）、手机号、邮件、授权码登录（请运行认证模式测试脚本.http）（同一个账号只能在一处登录，不然强制踢出）    
+🚀 资源管理：视频、图片、音频信息增删改查，资源审批（Seata AT模式）、处理、转办、委派，审批日志，数据同步（批量同步到ES）（默认数据库）          
+🚀 用户登录：账号密码（多租户）、手机号、邮件、授权码登录（请运行认证模式测试脚本.http）      
 
 ### 🚩 下个版本
 🚀 统计报表：用户画像（未开发）         
@@ -75,38 +75,36 @@ tenant/tenant123
 #### 🎯 Spring全家桶及核心技术版本
 | 组件                          | 版本             |
 |:----------------------------|:---------------|
-| Spring Boot                 | 3.0.4          |
-| Spring Cloud                | 2022.0.1       |
+| Spring Boot                 | 3.0.5          |
+| Spring Cloud                | 2022.0.2       |
 | Spring Cloud Alibaba        | 2022.0.0.0-RC1 |
-| Spring Boot Admin           | 3.0.0          |
+| Spring Boot Admin           | 3.0.2          |
 | Spring Authorization Server | 1.0.1          |
 | Mybatis Plus                | 3.5.3.1        |
-| Nacos                       | 2.2.0          |
-| Sentinel                    | 1.8.6          |
+| Nacos                       | 2.2.0.1        |
 | Seata                       | 1.6.1          |
+| Sentinel                    | 1.8.6          |
 | Mysql                       | 8.0.31         |
 | Redis                       | 7.0.8          |
-| Elasticsearch               | 7.6.2          |
+| Elasticsearch               | 8.6.2          |
 | RocketMQ                    | 5.0.0          |
-| Kafka                       | 2.8.1          |
 | Flowable                    | 7.0.0.M1       |
 | ShardingSphere              | 5.3.2          |
 | OpenResty                   | 1.21.4.1       |
 | HBase                       | 2.5.3          |
 #### 🍺 相关技术
 
+- 配置中心&服务注册&发现：Nacos
 - API网关：Spring Cloud Gateway
-- 配置中心：Spring Cloud Alibaba Nacos
-- 服务注册&发现：Spring Cloud Alibaba Nacos
 - 认证授权：Spring Security OAuth2 Authorization Server
 - 服务消费：Spring Cloud OpenFeign & OkHttp & HttpClient & WebClient
 - 负载均衡：Spring Cloud Loadbalancer
-- 服务熔断&降级&限流：Spring Cloud Alibaba Sentinel
+- 服务熔断&降级&限流：Sentinel
 - 分库分表&读写分离：ShardingSphere
-- 分布式事务：Spring Cloud Alibaba Seata
+- 分布式事务：Seata
+- 消息队列：RocketMQ
 - 分布式数据库：HBase
 - 服务监控：Spring Boot Admin & Prometheus
-- 消息队列：RocketMQ & Kafka
 - 链路跟踪：SkyWalking
 - 任务调度：Power Job
 - 日志分析：EFK
@@ -117,7 +115,7 @@ tenant/tenant123
 - 服务部署：Docker
 - 持续集成&交付：Jenkins
 - 持久层框架：Mybatis Plus
-- JSON 序列化：Jackson
+- JSON序列化：Jackson
 - 数据库：Mysql
 - 工作流：Flowable
 
@@ -125,60 +123,63 @@ tenant/tenant123
 ~~~
 ├── laokou-common  
         └── laokou-common-log                      --- 日志组件  
+        └── laokou-common-sms                      --- 短信组件  
+        └── laokou-common-mail                     --- 邮箱组件  
         └── laokou-common-core                     --- 核心组件  
+        └── laokou-common-cors                     --- 跨域组件  
+        └── laokou-common-redis                    --- 缓存组件  
+        └── laokou-common-kafka                    --- 消息组件  
+        └── laokou-common-wechat                   --- 微信组件  
+        └── laokou-common-pulsar                   --- 消息组件  
         └── laokou-common-swagger                  --- 文档组件  
+        └── laokou-common-reptile                  --- 爬虫组件  
+        └── laokou-common-mongodb                  --- 报表组件  
+        └── laokou-common-graphql                  --- 查询组件  
+        └── laokou-common-rocketmq                 --- 消息组件  
+        └── laokou-common-power-job                --- 工作组件  
+        └── laokou-common-freemarker               --- 模板组件  
+        └── laokou-common-prometheus               --- 监控组件  
+        └── laokou-common-elasticsearch            --- 搜索组件  
         └── laokou-common-bom                      --- 依赖版本库  
         └── laokou-common-i18n                     --- 国际化组件  
+        └── laokou-common-tenant                   --- 多租户组件  
+        └── laokou-common-easy-captcha             --- 验证码组件  
         └── laokou-common-api                      --- API调用组件  
         └── laokou-common-banner                   --- Banner组件  
+        └── laokou-common-oss                      --- 对象存储组件  
+        └── laokou-common-hbase                    --- 海量存储组件  
+        └── laokou-common-dubbo                    --- 远程调用组件  
         └── laokou-common-jasypt                   --- 加密解密组件  
         └── laokou-common-security                 --- 认证授权组件  
+        └── laokou-common-openfeign                --- 远程调用组件   
+        └── laokou-common-easy-excel               --- 导入导出组件   
+        └── laokou-common-clickhouse               --- 列式存储组件  
         └── laokou-common-data-cache               --- 数据缓存组件  
         └── laokou-common-data-filter              --- 数据过滤组件  
+        └── laokou-common-redis-search             --- 高效搜索组件  
         └── laokou-common-mybatis-plus             --- 对象映射组件  
+        └── laokou-common-dynamic-router           --- 动态路由组件  
         └── laokou-common-ip-region                --- IP归属地组件  
+        └── laokou-common-neo4j                    --- 图形数据库组件  
+        └── laokou-common-seata                    --- 分布式事务组件  
+        └── laokou-common-r2dbc                    --- 响应式数据库组件  
+        └── laokou-common-sentinel                 --- 服务限流&熔断降级组件  
 ├── laokou-cloud  
         └── laokou-gateway                         --- API网关  
         └── laokou-monitor                         --- 服务监控  
-        └── laokou-openfeign                       --- 远程调用  
-        └── laokou-sntinel                         --- 服务限流&熔断降级  
+        └── laokou-register                        --- 服务治理  
+        └── laokou-sentinel                        --- 流量治理  
+        └── laokou-seata                           --- 分布式事务  
 ├── laokou-service         
         └── laokou-generator                       --- 模板模块  
         └── laokou-auth                            --- 认证授权模块  
         └── laokou-admin                           --- 后台管理模块  
         └── laokou-report                          --- 数据分析模块  
         └── laokou-modlule         
-                └── laokou-sms                     --- 短信模块  
-                └── laokou-mail                    --- 邮件模块  
-                └── laokou-redis                   --- 缓存模块  
-                └── laokou-kafka                   --- 消息模块  
-                └── laokou-wechat                  --- 微信模块  
-                └── laokou-mongodb                 --- 报表模块  
-                └── laokou-rocketmq                --- 消息模块  
-                └── laokou-power-job               --- 工作模块  
-                └── laokou-elasticsearch           --- 搜索模块  
+                └── laokou-test                    --- 测试模块  
                 └── laokou-im                      --- 即时通讯模块  
-                └── laokou-oss                     --- 对象存储模块  
-                └── laokou-hbase                   --- 海量存储模块  
                 └── laokou-flowable                --- 工作流程模块  
-                └── laokou-dynamic-router          --- 动态路由模块  
 ~~~
-
-### 🐧 环境配置
-#### 🌻 安装教程
-[centos7 安装jdk1.8](https://kcloud.blog.csdn.net/article/details/82184984)  
-[centos7 安装mysql5.7](https://kcloud.blog.csdn.net/article/details/123628721)  
-[centos7 安装maven](https://kcloud.blog.csdn.net/article/details/108459715)  
-[centos7 安装redis](https://kcloud.blog.csdn.net/article/details/82589349)  
-[centos7 安装中文字体](https://kcloud.blog.csdn.net/article/details/106575947)  
-[centos7 安装jenkins](https://kcloud.blog.csdn.net/article/details/112171878)  
-[centos7 安装nacos](https://kcloud.blog.csdn.net/article/details/82589017)  
-[centos7 安装elasticsearch7.6.2](https://kcloud.blog.csdn.net/article/details/123123229)  
-[centos7 安装kafka](https://kcloud.blog.csdn.net/article/details/123771040)  
-[centos7 安装rocketmq](https://blog.csdn.net/qq_39893313/article/details/128223900)  
-
-#### 🌱 安装包
-[百度网盘](https://pan.baidu.com/s/1swrV9ffJnmz4S0mfkuBbIw) 提取码：1111
 
 ### 👍 Maven打包
 ```bash
@@ -222,6 +223,29 @@ elasticsearch:
   cluster-name: elasticsearch-node
 ```
 
+### 📖 分布式事务AT
+#### 🍸 服务配置
+```yaml
+# seata
+seata:
+  config:
+    type: nacos
+    nacos:
+      server-addr: 127.0.0.1:8848
+      namespace: xxx-xxx-xxx-xx
+      group: SEATA_GROUP
+  registry:
+    type: nacos
+    nacos:
+      namespace: xxx-xxx-xxx-xx
+      group: SEATA_GROUP
+      server-addr: 127.0.0.1:8848
+  enabled: true
+  tx-service-group: default_tx_group
+  data-source-proxy-mode: AT
+```
+
+
 ### 🌵 JDK版本兼容
 ##### 🌍 VM options配置
 ```shell script
@@ -257,28 +281,6 @@ public class SysUserApiController {
 }
 ```
 
-### 📖 分布式事务AT
-#### 🍸 服务配置
-```yaml
-# seata
-seata:
-  config:
-    type: nacos
-    nacos:
-      server-addr: 127.0.0.1:8848
-      namespace: xxx-xxx-xxx-xx
-      group: SEATA_GROUP
-  registry:
-    type: nacos
-    nacos:
-      namespace: xxx-xxx-xxx-xx
-      group: SEATA_GROUP
-      server-addr: 127.0.0.1:8848
-  enabled: true
-  tx-service-group: default_tx_group
-  data-source-proxy-mode: AT
-```
-
 ##### ⚓ 代码引入
 ```shell
 @Service
@@ -306,11 +308,11 @@ public class SysResourceApplicationServiceImpl implements SysResourceApplication
 ```
 
 ### ✈ 启动系统
-- 1.必须启动Mysql、Redis、Nacos、Seata
-- 2.可选启动Sentinel、RocketMQ、Kafka、ElasticSearch、MongoDB
+- 1.必须启动Mysql、Redis
+- 2.可选启动Sentinel、RocketMQ、ElasticSearch、MongoDB
 - 3.将doc/config/dev目录下的zip压缩文件都导入Nacos
 - 4.运行doc/db/db_init.sql（如果使用租户，需要运行doc/db/db_tenant_init.sql）
-- 5.分别启动laokou-gateway、laokou-auth、laokou-admin（其他的服务根据实际情况启动）
+- 5.按顺序启动laokou-register、laokou-seata、laokou-gateway、laokou-auth、laokou-admin、laokou-flowable、laokou-im（其他的服务根据实际情况启动）
 - 6.使用flowable审批，第一次启动，需要在流程定义上传流程图（下载模板，然后上传即可）
 
 ### 😋 高可用系统构建
