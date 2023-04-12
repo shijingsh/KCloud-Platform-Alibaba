@@ -1,0 +1,34 @@
+第一步，查看当前的上游代码库
+
+
+git remote -v
+
+
+第二步，再设置一个上游代码库，为 fork 的仓库地址
+
+
+$ git remote add upstream https://github.com/KouShenhai/KCloud-Platform-Alibaba.git # 再设置一个上游代码库
+$ git remote -v
+
+
+第三步，拉取新设置的上游代码库
+$ git fetch upstream # 拉取新设置的上游代码库 
+
+
+第四步，切换本地分支到 main 分支
+$ git checkout master # 切换本地分支到master分支 
+
+第五步，拉取或合并远程分支到本地分支
+
+git merge upstream/master
+
+# 使用Pull拉取分支
+$ git pull --rebase upstream master # 将上游仓库的main分支通过rebase的形式拉取到本地main分支
+# 或者使用Merge
+$ git merge upstream master # 使用Merge会多一条merge commit，而pull --rebase不会有 
+
+
+第六步，将本地的分支推送到自己的远程仓库
+
+git push
+$ git push origin master # 再将本地的分支推送到自己的远程仓库 
